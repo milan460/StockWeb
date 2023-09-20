@@ -6,4 +6,5 @@ import java.util.Set;
 
 public interface StockService {
     StockDTO getStockTicker(String tickerSymbol);
+
 }

@@ -9,7 +9,7 @@ import java.util.Objects;
 public class StockDTO {
     @Getter
     @Setter
-    private int regularMarketPrice;
+    private double regularMarketPrice;
 
     @Getter
     @Setter
@@ -65,7 +65,7 @@ public class StockDTO {
 
     @Getter
     @Setter
-    private String earningsData;
+    private String earningsDate;
 
     @Getter
     @Setter
@@ -85,7 +85,7 @@ public class StockDTO {
 
     public StockDTO(){}
 
-    public StockDTO(int regularMarketPrice, double postMarketPrice, double prevClosePrice, double openPrice, String bid, String ask, String dayRange, String fiftyTwoWeekRange, double volume, double avgVolume, String marketCap, double beta, double PERatio, double EPS, String earningsData, String forwardDividendAndYield, String exDividendDate, double oneYearTarget, String name) {
+    public StockDTO(double regularMarketPrice, double postMarketPrice, double prevClosePrice, double openPrice, String bid, String ask, String dayRange, String fiftyTwoWeekRange, double volume, double avgVolume, String marketCap, double beta, double PERatio, double EPS, String earningsDate, String forwardDividendAndYield, String exDividendDate, double oneYearTarget, String name) {
         this.regularMarketPrice = regularMarketPrice;
         this.postMarketPrice = postMarketPrice;
         this.prevClosePrice = prevClosePrice;
@@ -100,7 +100,7 @@ public class StockDTO {
         this.beta = beta;
         this.PERatio = PERatio;
         this.EPS = EPS;
-        this.earningsData = earningsData;
+        this.earningsDate = earningsDate;
         this.forwardDividendAndYield = forwardDividendAndYield;
         this.exDividendDate = exDividendDate;
         this.oneYearTarget = oneYearTarget;
@@ -112,12 +112,12 @@ public class StockDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StockDTO stockDTO = (StockDTO) o;
-        return regularMarketPrice == stockDTO.regularMarketPrice && Double.compare(postMarketPrice, stockDTO.postMarketPrice) == 0 && Double.compare(prevClosePrice, stockDTO.prevClosePrice) == 0 && Double.compare(openPrice, stockDTO.openPrice) == 0 && Double.compare(volume, stockDTO.volume) == 0 && Double.compare(avgVolume, stockDTO.avgVolume) == 0 && Double.compare(beta, stockDTO.beta) == 0 && Double.compare(PERatio, stockDTO.PERatio) == 0 && Double.compare(EPS, stockDTO.EPS) == 0 && Double.compare(oneYearTarget, stockDTO.oneYearTarget) == 0 && Objects.equals(bid, stockDTO.bid) && Objects.equals(ask, stockDTO.ask) && Objects.equals(dayRange, stockDTO.dayRange) && Objects.equals(fiftyTwoWeekRange, stockDTO.fiftyTwoWeekRange) && Objects.equals(marketCap, stockDTO.marketCap) && Objects.equals(earningsData, stockDTO.earningsData) && Objects.equals(forwardDividendAndYield, stockDTO.forwardDividendAndYield) && Objects.equals(exDividendDate, stockDTO.exDividendDate) && Objects.equals(name, stockDTO.name);
+        return Double.compare(regularMarketPrice, stockDTO.regularMarketPrice) == 0 && Double.compare(postMarketPrice, stockDTO.postMarketPrice) == 0 && Double.compare(prevClosePrice, stockDTO.prevClosePrice) == 0 && Double.compare(openPrice, stockDTO.openPrice) == 0 && Double.compare(volume, stockDTO.volume) == 0 && Double.compare(avgVolume, stockDTO.avgVolume) == 0 && Double.compare(beta, stockDTO.beta) == 0 && Double.compare(PERatio, stockDTO.PERatio) == 0 && Double.compare(EPS, stockDTO.EPS) == 0 && Double.compare(oneYearTarget, stockDTO.oneYearTarget) == 0 && Objects.equals(bid, stockDTO.bid) && Objects.equals(ask, stockDTO.ask) && Objects.equals(dayRange, stockDTO.dayRange) && Objects.equals(fiftyTwoWeekRange, stockDTO.fiftyTwoWeekRange) && Objects.equals(marketCap, stockDTO.marketCap) && Objects.equals(earningsDate, stockDTO.earningsDate) && Objects.equals(forwardDividendAndYield, stockDTO.forwardDividendAndYield) && Objects.equals(exDividendDate, stockDTO.exDividendDate) && Objects.equals(name, stockDTO.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(regularMarketPrice, postMarketPrice, prevClosePrice, openPrice, bid, ask, dayRange, fiftyTwoWeekRange, volume, avgVolume, marketCap, beta, PERatio, EPS, earningsData, forwardDividendAndYield, exDividendDate, oneYearTarget, name);
+        return Objects.hash(regularMarketPrice, postMarketPrice, prevClosePrice, openPrice, bid, ask, dayRange, fiftyTwoWeekRange, volume, avgVolume, marketCap, beta, PERatio, EPS, earningsDate, forwardDividendAndYield, exDividendDate, oneYearTarget, name);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class StockDTO {
                 ", beta=" + beta +
                 ", PERatio=" + PERatio +
                 ", EPS=" + EPS +
-                ", earningsData='" + earningsData + '\'' +
+                ", earningsDate='" + earningsDate + '\'' +
                 ", forwardDividendAndYield='" + forwardDividendAndYield + '\'' +
                 ", exDividendDate='" + exDividendDate + '\'' +
                 ", oneYearTarget=" + oneYearTarget +

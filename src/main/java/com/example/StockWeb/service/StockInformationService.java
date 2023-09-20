@@ -17,20 +17,21 @@ import java.util.logging.Logger;
 
 
 @Service
-public class StockInformationService implements StockService{
+public class StockInformationService implements StockService {
 
     private static final String baseURL = "https://finance.yahoo.com/quote/";
     private static final String userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36";
     static Logger logger = Logger.getLogger(StockInformationService.class.getName());
+
     @Override
     public StockDTO getStockTicker(String tickerSymbol) {
 
         return null;
     }
 
-    private void extractStockDataFromYahoo(String stockTicker){
+    private StockDTO extractStockDataFromYahoo(String stockTicker) {
         StockDTO stockInfo = new StockDTO();
-        try{
+        try {
             //connecting and getting the HTML from the URL
             Document doc = Jsoup.connect(baseURL.concat(stockTicker + "?p=" + stockTicker)).userAgent(userAgent).get();
 
@@ -42,7 +43,7 @@ public class StockInformationService implements StockService{
             //getting the stock price data from the tag
             Elements priceData = doc.getElementsByAttributeValue("data-test", "qsp-price");
             //get the regular market price
-            stockInfo.setRegularMarketPrice(Integer.parseInt(priceData.get(0).text()));
+            stockInfo.setRegularMarketPrice(Double.parseDouble(priceData.get(0).text()));
 
             //get the post market price
             stockInfo.setPostMarketPrice(Integer.parseInt(priceData.get(1).text()));
@@ -50,29 +51,74 @@ public class StockInformationService implements StockService{
 
             Elements leftTable = doc.getElementsByAttributeValue("data-test", "left-summary-table").get(0).getElementsByTag("tr");
 
-            HashMap<String, String> leftTableData = new HashMap<>();
-            for (Element element : leftTable) {
-                String title = element.getElementsByTag("td").get(0).text();
-                String value = element.getElementsByTag("td").get(1).text();
-                leftTableData.put(title, value);
-            }
+            getLeftTable(leftTable, stockInfo);
 
 
             Elements rightTable = doc.getElementsByAttributeValue("data-test", "right-summary-table").get(0).getElementsByTag("tr");
 
             HashMap<String, String> rightTableData = new HashMap<>();
 
-            for(Element element: rightTable){
+            for (Element element : rightTable) {
                 String title = element.getElementsByTag("td").get(0).text();
                 String value = element.getElementsByTag("td").get(1).text();
                 rightTableData.put(title, value);
             }
 
 
-        }
-        catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return stockInfo;
+    }
 
+    private void getLeftTable(Elements leftTable, StockDTO stockInfo) {
+        for (Element element : leftTable) {
+            String title = element.getElementsByTag("td").get(0).text();
+            String value = element.getElementsByTag("td").get(1).text();
+            if (title.contains("Previous Close")) {
+                stockInfo.setPrevClosePrice(Double.parseDouble(value));
+            } else if (title.contains("Open")) {
+                stockInfo.setOpenPrice(Double.parseDouble(value));
+            } else if (title.contains("Bid")) {
+                stockInfo.setBid(value);
+            } else if (title.contains("Ask")) {
+                stockInfo.setAsk(value);
+            } else if (title.contains("Day's Range")) {
+                stockInfo.setDayRange(value);
+            } else if (title.contains("52 Week Range")) {
+                stockInfo.setFiftyTwoWeekRange(value);
+            } else if (title.contains("Volume")) {
+                stockInfo.setVolume(Double.parseDouble(value));
+            } else if (title.contains("Avg. Volume")) {
+                stockInfo.setAvgVolume(Double.parseDouble(value));
+            }
+
+        }
+    }
+
+    private void getRightTable(Elements rightTable, StockDTO stockInfo) {
+        for (Element element : rightTable) {
+            String title = element.getElementsByTag("td").get(0).text();
+            String value = element.getElementsByTag("td").get(1).text();
+
+            if (title.contains("Market Cap")) {
+                stockInfo.setMarketCap(value);
+            } else if (title.contains("Beta (5Y Monthly)")) {
+                stockInfo.setBeta(Double.parseDouble(value));
+            } else if (title.contains("PE Ratio (TTM)")) {
+                stockInfo.setPERatio(Double.parseDouble(value));
+            } else if (title.contains("EPS (TTM)")) {
+                stockInfo.setEPS(Double.parseDouble(value));
+            } else if (title.contains("Earnings Date")) {
+                stockInfo.setEarningsDate(value);
+            } else if (title.contains("Forward Dividend & Yield")) {
+                stockInfo.setForwardDividendAndYield(value);
+            } else if (title.contains("Ex-Dividend Date")) {
+                stockInfo.setExDividendDate(value);
+            } else if (title.contains("1y Target Est")) {
+                stockInfo.setOneYearTarget(Double.parseDouble(value));
+            }
+        }
     }
 }
+
