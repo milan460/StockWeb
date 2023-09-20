@@ -53,13 +53,7 @@ public class StockInformationService implements StockService {
 
             Elements rightTable = doc.getElementsByAttributeValue("data-test", "right-summary-table").get(0).getElementsByTag("tr");
 
-            HashMap<String, String> rightTableData = new HashMap<>();
-
-            for (Element element : rightTable) {
-                String title = element.getElementsByTag("td").get(0).text();
-                String value = element.getElementsByTag("td").get(1).text();
-                rightTableData.put(title, value);
-            }
+            getRightTable(rightTable, stockInfo);
 
 
         } catch (IOException ex) {
