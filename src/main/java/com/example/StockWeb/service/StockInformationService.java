@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.util.logging.Logger;
 
 
 @Service
+@Component
 public class StockInformationService implements StockService {
 
     private static final String baseURL = "https://finance.yahoo.com/quote/";
@@ -24,12 +26,7 @@ public class StockInformationService implements StockService {
     static Logger logger = Logger.getLogger(StockInformationService.class.getName());
 
     @Override
-    public StockDTO getStockTicker(String tickerSymbol) {
-
-        return null;
-    }
-
-    private StockDTO extractStockDataFromYahoo(String stockTicker) {
+    public  StockDTO extractStockDataFromYahoo(String stockTicker) {
         StockDTO stockInfo = new StockDTO();
         try {
             //connecting and getting the HTML from the URL
@@ -46,7 +43,7 @@ public class StockInformationService implements StockService {
             stockInfo.setRegularMarketPrice(Double.parseDouble(priceData.get(0).text()));
 
             //get the post market price
-            stockInfo.setPostMarketPrice(Integer.parseInt(priceData.get(1).text()));
+            stockInfo.setPostMarketPrice(Double.parseDouble(priceData.get(1).text()));
             logger.info(priceData.text());
 
             Elements leftTable = doc.getElementsByAttributeValue("data-test", "left-summary-table").get(0).getElementsByTag("tr");
@@ -88,9 +85,9 @@ public class StockInformationService implements StockService {
             } else if (title.contains("52 Week Range")) {
                 stockInfo.setFiftyTwoWeekRange(value);
             } else if (title.contains("Volume")) {
-                stockInfo.setVolume(Double.parseDouble(value));
+                stockInfo.setVolume(value);
             } else if (title.contains("Avg. Volume")) {
-                stockInfo.setAvgVolume(Double.parseDouble(value));
+                stockInfo.setAvgVolume(value);
             }
 
         }
