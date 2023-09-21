@@ -83,17 +83,21 @@ public class StockInformationService implements StockService {
     }
 
     private void getStockPrices(Elements priceData, StockDTO stockInfo){
+        //get the regular market price
         stockInfo.setRegularMarketPrice(Double.parseDouble(priceData.get(0).text()));
 
         //get the post market price
         stockInfo.setPostMarketPrice(Double.parseDouble(priceData.get(1).text()));
-        logger.info(priceData.text());
+
     }
 
     private void getLeftTable(Elements leftTable, StockDTO stockInfo) {
+        //iterate through the table data
         for (Element element : leftTable) {
             String title = element.getElementsByTag("td").get(0).text();
             String value = element.getElementsByTag("td").get(1).text();
+            
+            //conditions to parse through and set the correct value to the model
             if (title.equals("Previous Close")) {
                 stockInfo.setPrevClosePrice(Double.parseDouble(value));
             } else if (title.equals("Open")) {
@@ -116,10 +120,12 @@ public class StockInformationService implements StockService {
     }
 
     private void getRightTable(Elements rightTable, StockDTO stockInfo) {
+        //iterate through the table data
         for (Element element : rightTable) {
             String title = element.getElementsByTag("td").get(0).text();
             String value = element.getElementsByTag("td").get(1).text();
 
+            //conditions to parse through and set the correct value to the model
             if (title.equals("Market Cap")) {
                 stockInfo.setMarketCap(value);
             } else if (title.equals("Beta (5Y Monthly)")) {
