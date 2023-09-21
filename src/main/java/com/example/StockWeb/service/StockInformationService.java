@@ -39,20 +39,20 @@ public class StockInformationService implements StockService {
 
             //getting the stock price data from the tag
             Elements priceData = doc.getElementsByAttributeValue("data-test", "qsp-price");
-            //get the regular market price
-            stockInfo.setRegularMarketPrice(Double.parseDouble(priceData.get(0).text()));
+            getStockPrices(priceData, stockInfo);
 
-            //get the post market price
-            stockInfo.setPostMarketPrice(Double.parseDouble(priceData.get(1).text()));
-            logger.info(priceData.text());
+            //call method to get the regular market stock price change information
+            getRegularMarketStockPriceInformation(doc, stockInfo);
 
+            //call method to get the post market stock price change information
+            getPostMarketStockPriceInformation(doc, stockInfo);
+
+            //get the information from the left side table on the Yahoo page
             Elements leftTable = doc.getElementsByAttributeValue("data-test", "left-summary-table").get(0).getElementsByTag("tr");
-
             getLeftTable(leftTable, stockInfo);
 
-
+            //get the information from the right side table on the Yahoo page
             Elements rightTable = doc.getElementsByAttributeValue("data-test", "right-summary-table").get(0).getElementsByTag("tr");
-
             getRightTable(rightTable, stockInfo);
 
 
@@ -62,25 +62,53 @@ public class StockInformationService implements StockService {
         return stockInfo;
     }
 
+    private void getRegularMarketStockPriceInformation(Document doc, StockDTO stockInfo){
+        //get the regular market price change
+        Elements regularPriceChange = doc.getElementsByAttributeValue("data-test", "qsp-price-change").get(0).getElementsByTag("span");
+        stockInfo.setRegularPriceChange(regularPriceChange.text());
+
+        //get the regular market price percent change
+        Elements regularPriceChangePercentage = doc.getElementsByAttributeValue("data-field", "regularMarketChangePercent").get(5).getElementsByTag("span");
+        stockInfo.setRegularPriceChangePercent(regularPriceChangePercentage.text());
+    }
+
+    private void getPostMarketStockPriceInformation(Document doc, StockDTO stockInfo){
+        //get the post market price change
+        Elements postMarketChange = doc.getElementsByAttributeValue("data-field", "postMarketChange").get(0).getElementsByTag("span");
+        stockInfo.setPostMarketChange(postMarketChange.text());
+
+        //get the post market price percent change
+        Elements postMarketChangePercent = doc.getElementsByAttributeValue("data-field", "postMarketChangePercent").get(0).getElementsByTag("span");
+        stockInfo.setPostMarketChangePercent(postMarketChangePercent.text());
+    }
+
+    private void getStockPrices(Elements priceData, StockDTO stockInfo){
+        stockInfo.setRegularMarketPrice(Double.parseDouble(priceData.get(0).text()));
+
+        //get the post market price
+        stockInfo.setPostMarketPrice(Double.parseDouble(priceData.get(1).text()));
+        logger.info(priceData.text());
+    }
+
     private void getLeftTable(Elements leftTable, StockDTO stockInfo) {
         for (Element element : leftTable) {
             String title = element.getElementsByTag("td").get(0).text();
             String value = element.getElementsByTag("td").get(1).text();
-            if (title.contains("Previous Close")) {
+            if (title.equals("Previous Close")) {
                 stockInfo.setPrevClosePrice(Double.parseDouble(value));
-            } else if (title.contains("Open")) {
+            } else if (title.equals("Open")) {
                 stockInfo.setOpenPrice(Double.parseDouble(value));
-            } else if (title.contains("Bid")) {
+            } else if (title.equals("Bid")) {
                 stockInfo.setBid(value);
-            } else if (title.contains("Ask")) {
+            } else if (title.equals("Ask")) {
                 stockInfo.setAsk(value);
-            } else if (title.contains("Day's Range")) {
+            } else if (title.equals("Day's Range")) {
                 stockInfo.setDayRange(value);
-            } else if (title.contains("52 Week Range")) {
+            } else if (title.equals("52 Week Range")) {
                 stockInfo.setFiftyTwoWeekRange(value);
-            } else if (title.contains("Volume")) {
+            } else if (title.equals("Volume")) {
                 stockInfo.setVolume(value);
-            } else if (title.contains("Avg. Volume")) {
+            } else if (title.equals("Avg. Volume")) {
                 stockInfo.setAvgVolume(value);
             }
 
@@ -92,21 +120,21 @@ public class StockInformationService implements StockService {
             String title = element.getElementsByTag("td").get(0).text();
             String value = element.getElementsByTag("td").get(1).text();
 
-            if (title.contains("Market Cap")) {
+            if (title.equals("Market Cap")) {
                 stockInfo.setMarketCap(value);
-            } else if (title.contains("Beta (5Y Monthly)")) {
+            } else if (title.equals("Beta (5Y Monthly)")) {
                 stockInfo.setBeta(Double.parseDouble(value));
-            } else if (title.contains("PE Ratio (TTM)")) {
+            } else if (title.equals("PE Ratio (TTM)")) {
                 stockInfo.setPERatio(Double.parseDouble(value));
-            } else if (title.contains("EPS (TTM)")) {
+            } else if (title.equals("EPS (TTM)")) {
                 stockInfo.setEPS(Double.parseDouble(value));
-            } else if (title.contains("Earnings Date")) {
+            } else if (title.equals("Earnings Date")) {
                 stockInfo.setEarningsDate(value);
-            } else if (title.contains("Forward Dividend & Yield")) {
+            } else if (title.equals("Forward Dividend & Yield")) {
                 stockInfo.setForwardDividendAndYield(value);
-            } else if (title.contains("Ex-Dividend Date")) {
+            } else if (title.equals("Ex-Dividend Date")) {
                 stockInfo.setExDividendDate(value);
-            } else if (title.contains("1y Target Est")) {
+            } else if (title.equals("1y Target Est")) {
                 stockInfo.setOneYearTarget(Double.parseDouble(value));
             }
         }
