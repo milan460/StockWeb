@@ -96,7 +96,7 @@ public class StockInformationService implements StockService {
         for (Element element : leftTable) {
             String title = element.getElementsByTag("td").get(0).text();
             String value = element.getElementsByTag("td").get(1).text();
-            
+
             //conditions to parse through and set the correct value to the model
             if (title.equals("Previous Close")) {
                 stockInfo.setPrevClosePrice(Double.parseDouble(value));
